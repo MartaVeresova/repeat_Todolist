@@ -1,0 +1,13 @@
+.App {
+  padding: 30px;
+  display: block ;
+}
+
+.App > div {
+  margin-right: 50px;
+}
+
+.textarea {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
