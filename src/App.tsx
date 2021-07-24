@@ -2,20 +2,30 @@ import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import {TodoList} from './components/TodoList';
 import {AddItemForm} from './components/AddItemForm';
-import {AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography} from '@material-ui/core';
+import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import Paper from '@material-ui/core/Paper';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import {Menu} from '@material-ui/icons';
 import {
-    addNewTodoListAC, addNewTodoListTC,
+    addNewTodoListTC,
     changeTodoListFilterAC,
     changeTodoListTitleAC,
     fetchTodolistsTC,
     FilterValuesType,
-    removeTodoListAC, removeTodoListTC,
+    removeTodoListTC,
     TodoListDomainType
 } from './state/todoLists-reducer';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './state/store';
 import {TasksType} from './api/todolist-api';
+import {RequestStatusType} from './state/app-reducer';
+import {ErrorSnackbar} from './components/ErrorSnackbar';
 
 
 export type TaskStateType = {
@@ -25,6 +35,8 @@ export type TaskStateType = {
 function App() {
 
     const todoLists = useSelector<AppRootStateType, Array<TodoListDomainType>>(state => state.todoLists)
+    const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -66,6 +78,7 @@ function App() {
 
     return (
         <div>
+            {status === 'loading' && <LinearProgress color="secondary" style={{position: 'fixed', width: '100%'}}/>}
             <AppBar position={'static'}>
                 <Toolbar style={{justifyContent: 'space-between'}}>
                     <IconButton color={'inherit'}>
@@ -90,6 +103,7 @@ function App() {
                     {todoListComponents}
                 </Grid>
             </Container>
+            <ErrorSnackbar/>
         </div>
     )
 }
