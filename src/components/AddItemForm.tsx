@@ -4,9 +4,10 @@ import {IconButton, TextField} from '@material-ui/core';
 
 export type AddItemFormPropsType = {
     addItem: (title: string) => void
+    disabled?: boolean
 }
 
-export const AddItemForm = React.memo(({addItem}: AddItemFormPropsType) => {
+export const AddItemForm = React.memo(({addItem, disabled}: AddItemFormPropsType) => {
 
     const [newItemTitle, setNewItemTitle] = useState('')
     const [error, setError] = useState<boolean>(false)
@@ -25,8 +26,9 @@ export const AddItemForm = React.memo(({addItem}: AddItemFormPropsType) => {
         setNewItemTitle('')
     }, [addItem, newItemTitle])
 
-    const onKeyPressEnter = useCallback((e: KeyboardEvent<HTMLInputElement>) =>
-        {(e.key === 'Enter') && onClickAddItem()},[onClickAddItem])
+    const onKeyPressEnter = useCallback((e: KeyboardEvent<HTMLInputElement>) => {
+        (e.key === 'Enter') && onClickAddItem()
+    }, [onClickAddItem])
 
     const onBlur = useCallback(() => setError(false), [])
 
@@ -43,6 +45,7 @@ export const AddItemForm = React.memo(({addItem}: AddItemFormPropsType) => {
                 helperText={error && 'Title is required!'}
                 size={'small'}
                 onBlur={onBlur}
+                disabled={disabled}
             />
             <IconButton onClick={onClickAddItem} color={'primary'}>
                 <AddBox/>

@@ -27,9 +27,11 @@ import {TasksType} from './api/todolist-api';
 import {RequestStatusType} from './state/app-reducer';
 import {ErrorSnackbar} from './components/ErrorSnackbar';
 
-
+export type TasksDomainType = TasksType & {
+    entityTaskStatus: RequestStatusType
+}
 export type TaskStateType = {
-    [key: string]: Array<TasksType>
+    [key: string]: Array<TasksDomainType>
 }
 
 function App() {
@@ -67,8 +69,9 @@ function App() {
                 <TodoList
                     todoListId={tl.id}
                     title={tl.title}
-                    changeFilter={changeFilter}
                     filter={tl.filter}
+                    entityStatus={tl.entityStatus}
+                    changeFilter={changeFilter}
                     removeTodoList={removeTodoList}
                     changeTodoListTitle={changeTodoListTitle}
                 />

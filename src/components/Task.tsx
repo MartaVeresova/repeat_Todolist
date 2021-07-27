@@ -4,14 +4,17 @@ import {Checkbox, IconButton} from '@material-ui/core';
 import {Delete} from '@material-ui/icons';
 import {removeTaskTC, updateTaskTC} from '../state/tasks-reducer';
 import {useDispatch} from 'react-redux';
-import {TaskStatuses, TasksType} from '../api/todolist-api';
+import {TaskStatuses} from '../api/todolist-api';
+import {RequestStatusType} from '../state/app-reducer';
+import {TasksDomainType} from '../App';
 
 export type TaskPropsType = {
-    task: TasksType
+    task: TasksDomainType
     todoListId: string
+    entityTaskStatus: RequestStatusType
 }
 
-export const Task = React.memo(({task, todoListId}: TaskPropsType) => {
+export const Task = React.memo(({task, todoListId, entityTaskStatus}: TaskPropsType) => {
     // const task = useSelector<AppRootStore, TasksPropsType>(state => state.tasks[todoListId].find(task => task.id === taskFromProps.id)!)
 
     const dispatch = useDispatch()
@@ -37,12 +40,15 @@ export const Task = React.memo(({task, todoListId}: TaskPropsType) => {
                     color={'primary'}
                     checked={task.status === TaskStatuses.Completed}
                     onChange={onChangeChecked}
+                    disabled={entityTaskStatus === 'loading'}
                 />
                 <EditableSpan
                     newTitle={task.title}
-                    changeTitle={onChangeTitle}/>
+                    changeTitle={onChangeTitle}
+                    disabled={entityTaskStatus === 'loading'}
+                />
             </span>
-            <IconButton onClick={onClickRemoveTask}>
+            <IconButton onClick={onClickRemoveTask} disabled={entityTaskStatus === 'loading'}>
                 <Delete/>
             </IconButton>
         </li>

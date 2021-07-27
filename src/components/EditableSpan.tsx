@@ -4,10 +4,11 @@ import {Input} from '@material-ui/core';
 export type EditableSpanPropsType = {
     newTitle: string
     changeTitle: (newTitle: string) => void
+    disabled?: boolean
 }
 
-export const EditableSpan = React.memo(({newTitle, changeTitle}: EditableSpanPropsType) => {
-    
+export const EditableSpan = React.memo(({newTitle, changeTitle, disabled}: EditableSpanPropsType) => {
+
     const [editMode, setEditMode] = useState(false)
     const [titleValue, setTitleValue] = useState(newTitle)
 
@@ -15,6 +16,9 @@ export const EditableSpan = React.memo(({newTitle, changeTitle}: EditableSpanPro
 
     const offEditMode = useCallback(() => {
         setEditMode(false)
+        if (titleValue.length > 100) {
+            setTitleValue(newTitle)
+        }
         changeTitle(titleValue)
     }, [changeTitle, titleValue])
 
@@ -30,7 +34,8 @@ export const EditableSpan = React.memo(({newTitle, changeTitle}: EditableSpanPro
                 onChange={onChangeTitle}
                 onBlur={offEditMode}
                 autoFocus
+                disabled={disabled}
             />
-            : <span onDoubleClick={onEditMode}>{newTitle}</span>
+            : <span onDoubleClick={onEditMode} >{newTitle}</span>
     )
 })

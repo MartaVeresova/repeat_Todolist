@@ -8,13 +8,15 @@ import {AppRootStateType} from '../state/store';
 import {addNewTaskTC, fetchTasksTC} from '../state/tasks-reducer';
 import {Task} from './Task';
 import {changeTodoListTitleTC, FilterValuesType} from '../state/todoLists-reducer';
-import {TasksType} from '../api/todolist-api';
+import {RequestStatusType} from '../state/app-reducer';
+import {TasksDomainType} from '../App';
 
 
 export type TodoListPropsType = {
     todoListId: string
     title: string
     filter: FilterValuesType
+    entityStatus: RequestStatusType
     changeFilter: (value: FilterValuesType, todoListId: string) => void
     removeTodoList: (todoListId: string) => void
     changeTodoListTitle: (title: string, todoListId: string) => void
@@ -26,10 +28,11 @@ export const TodoList = React.memo(({
                                         changeTodoListTitle,
                                         title,
                                         changeFilter,
-                                        filter
+                                        filter,
+                                        entityStatus,
                                     }: TodoListPropsType) => {
 
-    const tasks = useSelector<AppRootStateType, Array<TasksType>>(state => state.tasks[todoListId])
+    const tasks = useSelector<AppRootStateType, Array<TasksDomainType>>(state => state.tasks[todoListId])
     const dispatch = useDispatch()
     useEffect(() => {
         dispatch(fetchTasksTC(todoListId))
@@ -71,12 +74,12 @@ export const TodoList = React.memo(({
     return (
         <div>
             <h3 style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <EditableSpan newTitle={title} changeTitle={changeTitleToTodoList}/>
-                <IconButton onClick={onClickRemoveTodolist}>
+                <EditableSpan newTitle={title} changeTitle={changeTitleToTodoList} disabled={entityStatus === 'loading'}/>
+                <IconButton onClick={onClickRemoveTodolist} disabled={entityStatus === 'loading'}>
                     <Delete/>
                 </IconButton>
             </h3>
-            <AddItemForm addItem={addNewTask}/>
+            <AddItemForm addItem={addNewTask} disabled={entityStatus === 'loading'}/>
             <ul style={{listStyle: 'none', paddingLeft: '0px'}}>
                 {
                     newTasks.map(t => {
@@ -85,6 +88,7 @@ export const TodoList = React.memo(({
                                 key={t.id}
                                 task={t}
                                 todoListId={todoListId}
+                                entityTaskStatus={t.entityTaskStatus}
                             />)
                     })
                 }

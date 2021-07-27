@@ -56,7 +56,7 @@ export type TasksType = {
     deadline: string
     addedDate: string
 }
-type CommonResponseType<T = {}> = {
+export type CommonResponseType<T = {}> = {
     resultCode: 0 | 1 | 10
     fieldsErrors: string[]
     messages: string[]
