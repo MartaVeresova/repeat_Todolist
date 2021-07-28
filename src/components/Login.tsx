@@ -9,9 +9,15 @@ import Grid from '@material-ui/core/Grid'
 import TextField from '@material-ui/core/TextField'
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import {loginTC} from '../state/auth-reducer';
+import {useDispatch, useSelector} from 'react-redux';
+import {AppRootStateType} from '../state/store';
+import {Redirect} from 'react-router-dom';
 
 export const Login = () => {
 
+    const dispatch = useDispatch()
+    const isLoggedIn = useSelector<AppRootStateType, boolean>(state => state.auth.isLoggedIn)
     const formik = useFormik({
         initialValues: {
             email: '',
@@ -26,10 +32,15 @@ export const Login = () => {
                 .required('Required'),
         }),
         onSubmit: values => {
-            alert(JSON.stringify(values))
+            dispatch(loginTC(values))
             formik.resetForm()
         },
-    });
+    })
+
+    if (isLoggedIn) {
+        return <Redirect to={'/'} />
+    }
+
     return <Grid container justify="center">
         <Grid item xs={4}>
             <form onSubmit={formik.handleSubmit}>
@@ -37,7 +48,7 @@ export const Login = () => {
                     <FormLabel>
                         <p>To log in get registered
                             <a href={'https://social-network.samuraijs.com/'}
-                               target={'_blank'}>here
+                               target={'_blank'} rel="noreferrer">here
                             </a>
                         </p>
                         <p>or use common test account credentials:</p>

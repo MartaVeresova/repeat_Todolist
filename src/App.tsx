@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useEffect} from 'react';
 import './App.css';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
@@ -14,8 +14,10 @@ import {ErrorSnackbar} from './components/ErrorSnackbar';
 import {Redirect, Route, Switch} from 'react-router-dom';
 import {Login} from './components/Login';
 import {TodolistList} from './components/TodolistList';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {AppRootStateType} from './state/store';
+import {initializeAppTC, logoutTC} from './state/auth-reducer';
+import {CircularProgress} from '@material-ui/core';
 
 export type TasksDomainType = TasksType & {
     entityTaskStatus: RequestStatusType
@@ -26,7 +28,23 @@ export type TaskStateType = {
 
 function App() {
 
+    const dispatch = useDispatch()
     const status = useSelector<AppRootStateType, RequestStatusType>(state => state.app.status)
+    const isInitialized = useSelector<AppRootStateType, boolean>(state => state.app.isInitialized)
+
+    useEffect(() => {
+        dispatch(initializeAppTC())
+    }, [dispatch])
+
+    const onClickLogout = useCallback(() => {
+        dispatch(logoutTC())
+    }, [dispatch])
+
+    if (!isInitialized) {
+        return <div style={{position: 'fixed', top: '30%', textAlign: 'center', width: '100%'}}>
+            <CircularProgress/>
+        </div>
+    }
 
     return (
         <div>
@@ -42,8 +60,9 @@ function App() {
                     <Button
                         color={'inherit'}
                         variant={'outlined'}
+                        onClick={onClickLogout}
                     >
-                        LogIn
+                        Logout
                     </Button>
                 </Toolbar>
             </AppBar>
@@ -52,7 +71,7 @@ function App() {
                     <Route exact path={'/'} render={() => <TodolistList/>}/>
                     <Route path={'/login'} render={() => <Login/>}/>
                     <Route path={'/404'} render={() => <h1>404: PAGE NOT FOUND</h1>}/>
-                    <Redirect from={'*'} to={'/404'} />
+                    <Redirect from={'*'} to={'/404'}/>
                 </Switch>
             </Container>
             <ErrorSnackbar/>

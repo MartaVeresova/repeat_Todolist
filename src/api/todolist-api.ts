@@ -36,6 +36,18 @@ export const todolistApi = {
     },
 }
 
+export const authApi = {
+    me() {
+        return instance.get<CommonResponseType<ResponseMeType>>(`/auth/me`)
+    },
+    login(data: RequestLoginType) {
+        return instance.post<CommonResponseType<{ userId: number }>>(`/auth/login`, data)
+    },
+    logout() {
+        return instance.delete<CommonResponseType>(`/auth/login`)
+    },
+}
+
 
 //types
 export type TodoListType = {
@@ -92,4 +104,15 @@ export type ModelType = {
     priority: number
     startDate: string
     deadline: string
+}
+export type RequestLoginType = {
+    email: string
+    password: string
+    rememberMe: boolean
+    captcha?: string
+}
+export type ResponseMeType = {
+    id: number
+    email: string
+    login: string
 }

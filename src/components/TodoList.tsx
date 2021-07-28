@@ -32,11 +32,12 @@ export const TodoList = React.memo(({
                                         entityStatus,
                                     }: TodoListPropsType) => {
 
-    const tasks = useSelector<AppRootStateType, Array<TasksDomainType>>(state => state.tasks[todoListId])
     const dispatch = useDispatch()
+    const tasks = useSelector<AppRootStateType, Array<TasksDomainType>>(state => state.tasks[todoListId])
+
     useEffect(() => {
         dispatch(fetchTasksTC(todoListId))
-    }, [])
+    }, [dispatch, todoListId])
 
     const getTaskForTodoList = () => {
         switch (filter) {
@@ -67,9 +68,9 @@ export const TodoList = React.memo(({
         removeTodoList(todoListId)
     }, [removeTodoList, todoListId])
 
-    const addNewTask = useCallback((newTitle: string) => dispatch(addNewTaskTC(todoListId, newTitle)), [todoListId])
+    const addNewTask = useCallback((newTitle: string) => dispatch(addNewTaskTC(todoListId, newTitle)), [dispatch, todoListId])
 
-    const changeTitleToTodoList = useCallback((newTitle: string) => dispatch(changeTodoListTitleTC(newTitle, todoListId)), [todoListId])
+    const changeTitleToTodoList = useCallback((newTitle: string) => dispatch(changeTodoListTitleTC(newTitle, todoListId)), [dispatch, todoListId])
 
     return (
         <div>

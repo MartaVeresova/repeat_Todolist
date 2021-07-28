@@ -20,11 +20,11 @@ export const EditableSpan = React.memo(({newTitle, changeTitle, disabled}: Edita
             setTitleValue(newTitle)
         }
         changeTitle(titleValue)
-    }, [changeTitle, titleValue])
+    }, [changeTitle, titleValue, newTitle])
 
     const onChangeTitle = useCallback((e: ChangeEvent<HTMLInputElement>) => {
         setTitleValue(e.currentTarget.value)
-    }, [])
+    }, [setTitleValue])
 
     return (
         editMode
